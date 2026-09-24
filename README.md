@@ -10,13 +10,13 @@ A small portfolio demo built for a Founding GTM application. It demonstrates the
 4. Drafts a first-touch message.
 5. Emits a structured `gtm_lead_qualified` event that can later be sent to PostHog/HubSpot/Airtable/Sheets.
 
-The core is intentionally credential-free so anyone reviewing the repository can import it and run it immediately.
+The core is intentionally credential-free so anyone reviewing the repository can import it and run it immediately. The repo also includes an optional evidence-constrained AI personalization layer and a real worked prospect example.
 
 ## Files
 
 - `workflow/sparkles-gtm-lead-router.json` - importable n8n workflow.
 - `form/index.html` - local lead-intake form that posts to the webhook.
-- `AI_PERSONALIZATION_PROMPT.md` - optional LLM upgrade.
+- `AI_PERSONALIZATION_PROMPT.md` - optional LLM upgrade.\n- `research/sentry-prospect.json` - structured real-prospect research packet.\n- `research/sentry-evidence.md` - public evidence, hypotheses and unknowns.\n- `scripts/build-personalization-prompt.js` - builds the exact grounded prompt without making an API call.\n- `scripts/ai-personalize.mjs` - optional live AI personalization step using configurable model credentials.
 
 ## 30-second reviewer demo
 
