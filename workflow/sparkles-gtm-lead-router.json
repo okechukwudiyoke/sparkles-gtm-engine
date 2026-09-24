@@ -1,0 +1,178 @@
+{
+  "name": "Sparkles GTM Lead Qualification & First-Touch Router",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Demo Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    company: \"Acme Analytics\",\n    website: \"https://acme.example\",\n    employee_count: 85,\n    engineering_team_size: 14,\n    role: \"Head of Growth\",\n    email: \"maya@acme.example\",\n    existing_codebase: true,\n    uses_ai_coding_tools: true,\n    non_engineering_change_volume: \"high\",\n    pain_point: \"Marketing waits several days for engineering to make pricing and landing-page changes.\"\n  }\n}];"
+      },
+      "id": "seed-demo",
+      "name": "Seed Demo Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -540,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sparkles-gtm-lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "lead-webhook",
+      "name": "Lead Intake Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        140
+      ],
+      "webhookId": "sparkles-gtm-lead-demo"
+    },
+    {
+      "parameters": {
+        "jsCode": "const src = $json.body ?? $json;\nconst asBool = (v) => v === true || String(v).toLowerCase() === 'true' || String(v).toLowerCase() === 'yes';\nconst num = (v) => Number(v || 0);\nconst role = String(src.role || '').toLowerCase();\nconst volume = String(src.non_engineering_change_volume || '').toLowerCase();\nlet score = 0;\nconst reasons = [];\n\nif (asBool(src.existing_codebase)) { score += 25; reasons.push('existing production codebase'); }\nif (num(src.engineering_team_size) >= 5) { score += 20; reasons.push('engineering team >= 5'); }\nif (['high','medium'].includes(volume)) { score += volume === 'high' ? 15 : 10; reasons.push(`${volume} non-engineering change volume`); }\nif (asBool(src.uses_ai_coding_tools)) { score += 15; reasons.push('already uses AI coding tools'); }\nif (/(growth|marketing|operations|ops|product|sales|engineering|cto|founder)/.test(role)) { score += 15; reasons.push('relevant champion/validator role'); }\nconst employees = num(src.employee_count);\nif (employees >= 20 && employees <= 500) { score += 10; reasons.push('20-500 employee test segment'); }\n\nscore = Math.min(score, 100);\nconst segment = score >= 70 ? 'A' : score >= 50 ? 'B' : 'C';\nreturn [{ json: {\n  ...src,\n  icp_score: score,\n  segment,\n  score_reasons: reasons,\n  scored_at: new Date().toISOString()\n}}];"
+      },
+      "id": "score-lead",
+      "name": "Normalize + Score ICP",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        10
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const x = $json;\nconst first = (x.role || 'there').split(' ')[0];\nlet route, cta, subject;\nif (x.segment === 'A') {\n  route = 'founder_outreach';\n  cta = 'Would it be useful to test one real backlog item and see the PR Sparkles produces?';\n  subject = `${x.company}: ship one backlog item without joining the engineering queue`;\n} else if (x.segment === 'B') {\n  route = 'nurture';\n  cta = 'Worth a 10-minute look at how Sparkles keeps engineering review in the loop?';\n  subject = `${x.company}: a safer way for non-engineers to ship small changes`;\n} else {\n  route = 'educate';\n  cta = 'If this becomes a recurring bottleneck, I can send a 2-minute workflow example.';\n  subject = `When ${x.company} starts feeling the engineering queue`;\n}\nconst pain = x.pain_point || 'non-engineering teams depend on engineering for routine changes';\nconst message = `Hi ${first},\\n\\nI was looking at ${x.company} and your role in ${x.role || 'the team'}. The use case that stood out is: ${pain}\\n\\nSparkles lets non-engineering teammates request changes against an existing GitHub codebase while the work still comes back as a reviewable PR, so engineering keeps its normal controls.\\n\\n${cta}\\n\\n- Okechukwu`;\nreturn [{ json: { ...x, route, subject, message } }];"
+      },
+      "id": "route-draft",
+      "name": "Route + Draft First Touch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        10
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const x = $json;\nreturn [{json: {\n  ...x,\n  funnel_event: {\n    event_name: 'gtm_lead_qualified',\n    timestamp: new Date().toISOString(),\n    distinct_id: x.email || `${x.company || 'unknown'}-${Date.now()}`,\n    properties: {\n      company: x.company,\n      role: x.role,\n      icp_score: x.icp_score,\n      segment: x.segment,\n      route: x.route,\n      existing_codebase: x.existing_codebase,\n      uses_ai_coding_tools: x.uses_ai_coding_tools,\n      non_engineering_change_volume: x.non_engineering_change_volume\n    }\n  }\n}}];"
+      },
+      "id": "funnel-event",
+      "name": "Build Funnel Event",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        10
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Return GTM Decision",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        500,
+        120
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Demo Trigger": {
+      "main": [
+        [
+          {
+            "node": "Seed Demo Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed Demo Lead": {
+      "main": [
+        [
+          {
+            "node": "Normalize + Score ICP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Intake Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize + Score ICP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize + Score ICP": {
+      "main": [
+        [
+          {
+            "node": "Route + Draft First Touch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route + Draft First Touch": {
+      "main": [
+        [
+          {
+            "node": "Build Funnel Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Funnel Event": {
+      "main": [
+        [
+          {
+            "node": "Return GTM Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "sparkles-gtm-demo-v1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
