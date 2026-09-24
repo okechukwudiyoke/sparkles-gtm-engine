@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sparkles GTM Lead Router Demo</title>
+<style>
+body{font-family:Inter,Arial,sans-serif;max-width:880px;margin:40px auto;padding:0 20px;color:#17202a;background:#f7f9fb}
+.card{background:white;border:1px solid #dfe5eb;border-radius:14px;padding:24px;box-shadow:0 4px 18px rgba(0,0,0,.04)}
+h1{margin:0 0 8px}.sub{color:#5a626c;margin-bottom:24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}
+label{font-size:13px;font-weight:700;display:block;margin-bottom:5px}input,select,textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid #cbd5df;border-radius:8px;background:#fff}textarea{min-height:86px}
+button{margin-top:18px;background:#18344e;color:white;border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}pre{white-space:pre-wrap;background:#101820;color:#e8f0f7;padding:16px;border-radius:10px;overflow:auto;margin-top:18px}
+small{color:#6a7480}@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
+</head><body>
+<div class="card">
+<h1>Sparkles GTM Lead Router</h1><div class="sub">Tiny n8n demo: capture → ICP score → route → first-touch draft → funnel event.</div>
+<div class="grid">
+<div class="full"><label>n8n Webhook URL</label><input id="url" value="http://localhost:5678/webhook-test/sparkles-gtm-lead"><small>Use /webhook-test while listening in the editor; /webhook after activating the workflow.</small></div>
+<div><label>Company</label><input id="company" value="Acme Analytics"></div><div><label>Website</label><input id="website" value="https://acme.example"></div>
+<div><label>Employee count</label><input id="employee_count" type="number" value="85"></div><div><label>Engineering team size</label><input id="engineering_team_size" type="number" value="14"></div>
+<div><label>Role</label><input id="role" value="Head of Growth"></div><div><label>Email</label><input id="email" value="maya@acme.example"></div>
+<div><label>Existing codebase?</label><select id="existing_codebase"><option value="true" selected>Yes</option><option value="false">No</option></select></div>
+<div><label>Uses AI coding tools?</label><select id="uses_ai_coding_tools"><option value="true" selected>Yes</option><option value="false">No</option></select></div>
+<div><label>Non-engineering change volume</label><select id="non_engineering_change_volume"><option>high</option><option>medium</option><option>low</option></select></div>
+<div class="full"><label>Pain point</label><textarea id="pain_point">Marketing waits several days for engineering to make pricing and landing-page changes.</textarea></div>
+</div>
+<button onclick="sendLead()">Score lead & draft message</button>
+<pre id="out">Result will appear here.</pre>
+</div>
+<script>
+async function sendLead(){
+ const g=id=>document.getElementById(id).value;
+ const payload={company:g('company'),website:g('website'),employee_count:Number(g('employee_count')),engineering_team_size:Number(g('engineering_team_size')),role:g('role'),email:g('email'),existing_codebase:g('existing_codebase')==='true',uses_ai_coding_tools:g('uses_ai_coding_tools')==='true',non_engineering_change_volume:g('non_engineering_change_volume'),pain_point:g('pain_point')};
+ const out=document.getElementById('out'); out.textContent='Sending…';
+ try{
+   const res=await fetch(g('url'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+   const txt=await res.text();
+   try{out.textContent=JSON.stringify(JSON.parse(txt),null,2)}catch{out.textContent=txt}
+ } catch(e){
+   out.textContent='Request failed: '+e+'\\n\\nMake sure n8n is listening on the webhook.';
+ }
+}
+</script>
+</body></html>
