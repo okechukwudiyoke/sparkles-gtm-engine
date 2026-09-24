@@ -1,53 +1,78 @@
 # Sparkles GTM Lead Qualification & First-Touch Router
 
-A small portfolio demo built for a Founding GTM application. It demonstrates the operating pattern Sparkles asks for: **growth strategy + hands-on automation + funnel instrumentation**.
+A candidate-built portfolio demo for Sparkles' Founding GTM role. It combines **growth strategy, deterministic qualification, grounded AI personalization, GitHub-native workflow, and funnel instrumentation**.
 
 ## What it does
 
 1. Receives a prospect via a manual demo trigger or POST webhook.
 2. Scores ICP fit from 0-100 with transparent rules.
-3. Assigns A/B/C segment and route.
+3. Assigns an A/B/C segment and route.
 4. Drafts a first-touch message.
-5. Emits a structured `gtm_lead_qualified` event that can later be sent to PostHog/HubSpot/Airtable/Sheets.
+5. Emits a structured `gtm_lead_qualified` event.
+6. Supports evidence-backed AI personalization without turning hypotheses into facts.
+7. Validates itself in GitHub Actions on every PR to `main`.
 
-The core is intentionally credential-free so anyone reviewing the repository can import it and run it immediately. The repo also includes an optional evidence-constrained AI personalization layer and a real worked prospect example.
-
-## Files
-
-- `workflow/sparkles-gtm-lead-router.json` - importable n8n workflow.
-- `form/index.html` - local lead-intake form that posts to the webhook.
-- `AI_PERSONALIZATION_PROMPT.md` - optional LLM upgrade.\n- `research/sentry-prospect.json` - structured real-prospect research packet.\n- `research/sentry-evidence.md` - public evidence, hypotheses and unknowns.\n- `scripts/build-personalization-prompt.js` - builds the exact grounded prompt without making an API call.\n- `scripts/ai-personalize.mjs` - optional live AI personalization step using configurable model credentials.
+The core is intentionally credential-free so a reviewer can inspect and run it quickly. The live AI step is optional.
 
 ## 30-second reviewer demo
 
-If you have Node.js installed, no n8n or API credentials are required:
-
 ```bash
-node scripts/demo.js
+npm run demo
 ```
 
-This reads `sample-lead.json`, applies the same transparent ICP scoring and routing logic as the n8n workflow, and prints a structured lead decision plus funnel event. A checked-in example is available at `examples/sample-output.json`.
+This reads `sample-lead.json`, applies the same qualification and routing logic as the n8n workflow, and prints the resulting lead decision plus funnel event.
 
-**Flow:** lead intake → ICP score → A/B/C segment → route → first-touch draft → funnel event.
+To validate the repo:
 
-## Run in n8n
+```bash
+npm run validate
+```
 
-1. Open n8n.
-2. Import `workflow/sparkles-gtm-lead-router.json`.
-3. For the fastest demo, click **Execute workflow** and run **Demo Trigger**.
-4. Inspect the output of **Build Funnel Event**.
+The validation script checks:
+- workflow JSON,
+- deterministic sample scoring,
+- funnel-event creation,
+- evidence IDs in the research packets,
+- hypothesis labelling,
+- prompt grounding guardrails.
 
-## Test the webhook
+## Files
 
-1. Open **Lead Intake Webhook** and click **Listen for test event**.
-2. Open `form/index.html` in a browser.
-3. Keep the default test URL: `http://localhost:5678/webhook-test/sparkles-gtm-lead`.
-4. Submit the form.
-5. The page will display the score, route, outbound draft and funnel event.
+- `workflow/sparkles-gtm-lead-router.json` — importable n8n workflow.
+- `form/index.html` — local lead-intake form that posts to the webhook.
+- `scripts/demo.js` — standalone credential-free reviewer demo.
+- `scripts/validate.js` — deterministic repo validation.
+- `scripts/build-personalization-prompt.js` — builds a grounded prompt without making an API call.
+- `scripts/ai-personalize.mjs` — optional live AI personalization step.
+- `research/sentry-prospect.json` — AI-native buyer research packet.
+- `research/sentry-evidence.md` — Sentry evidence, hypotheses and unknowns.
+- `research/ghost-prospect.json` — workflow/delegation buyer research packet.
+- `research/ghost-evidence.md` — Ghost evidence, hypotheses and unknowns.
+- `.github/workflows/validate.yml` — GitHub Actions validation.
 
-After activation, switch the form URL to:
+## Two GTM motions
 
-`http://localhost:5678/webhook/sparkles-gtm-lead`
+### 1. Sentry — AI-native engineering organisation
+
+Public evidence shows mature GitHub workflows and explicit agent-oriented development instructions.
+
+**Core GTM question:** if engineering already uses agents, can Sparkles expand safe software contribution to non-engineering teams while preserving existing GitHub review and CI controls?
+
+**Likely objection:** "We already use coding agents."
+
+**Proof angle:** non-engineer usability, governance, bounded permissions, review burden and time-to-merge.
+
+### 2. Ghost — cross-functional product/publishing organisation
+
+Public evidence shows official docs delivered through GitHub pull requests with PR previews, merge-to-main deployment and explicit pre-PR testing. Ghost also publicly lists engineering/development alongside product, design, brand, support and infrastructure roles.
+
+**Core GTM question:** can those cross-functional teammates ship bounded website, docs or product-surface changes themselves while keeping the existing preview, testing, review and merge controls?
+
+**Likely objection:** "Why should non-engineers touch the codebase?"
+
+**Proof angle:** reduce engineering interruption while keeping the current controls intact.
+
+These are deliberately different motions. The first tests differentiation against existing AI workflows. The second tests delegation and workflow acceleration.
 
 ## Scoring model
 
@@ -63,29 +88,76 @@ Routing:
 - **B (50-69):** nurture / use-case education
 - **C (<50):** educate / deprioritize
 
-## Why deterministic scoring?
+Unknown fields stay unknown. Research packets do not receive points for data that was not actually verified.
 
-The AI should accelerate research and copy, but qualification logic should remain inspectable and debuggable. This makes the workflow safer to iterate: you can compare funnel outcomes by segment without wondering whether a model silently changed the routing rule.
+## Why deterministic qualification?
 
-## AI upgrade
+The AI should accelerate research and copy, but the qualification rules remain inspectable and debuggable. That makes experiments measurable: conversion can be compared by segment without silently changing the routing logic.
 
-Use the prompt in `AI_PERSONALIZATION_PROMPT.md` to add an OpenAI/Claude model step for:
-- use-case hypothesis,
-- factual personalized opener,
-- predicted objection,
-- recommended proof/demo angle.
+**AI personalizes. Deterministic logic qualifies and routes.**
 
-Keep the score and route logic deterministic.
+## Evidence-backed AI personalization
 
-## Next production steps
+Inspect the exact prompt without any API call:
 
-- Enrich companies from a permitted data source.
-- Add human approval before send.
-- Write funnel events to PostHog.
-- Sync A/B leads to HubSpot/Airtable.
-- Add reply classification and follow-up state.
-- Track downstream activation: org created → GitHub connected → first run → first PR → first merge.
+```bash
+npm run prompt
+```
+
+Use another research packet:
+
+```bash
+node scripts/build-personalization-prompt.js research/ghost-prospect.json
+```
+
+For the optional live AI step, set both variables:
+
+```bash
+OPENAI_API_KEY=...
+OPENAI_MODEL=...
+npm run personalize
+```
+
+The prompt requires:
+- evidence IDs for factual claims,
+- explicit unknowns,
+- separation of hypothesis from fact,
+- a likely objection,
+- a proof angle,
+- concise outreach,
+- an `unsupported_claims` field.
+
+## Run in n8n
+
+1. Open n8n.
+2. Import `workflow/sparkles-gtm-lead-router.json`.
+3. Click **Execute workflow** and run **Demo Trigger**.
+4. Inspect **Build Funnel Event**.
+
+For webhook testing:
+
+1. Open **Lead Intake Webhook** and click **Listen for test event**.
+2. Open `form/index.html`.
+3. Keep `http://localhost:5678/webhook-test/sparkles-gtm-lead`.
+4. Submit the form.
+
+After activation, use:
+
+`http://localhost:5678/webhook/sparkles-gtm-lead`
+
+## Production extensions
+
+- permitted enrichment source,
+- human approval before send,
+- PostHog event ingestion,
+- HubSpot/Airtable sync,
+- reply classification,
+- follow-up state,
+- downstream activation tracking:
+  **org created → GitHub connected → first run → first PR → first merge**.
 
 ## Portfolio framing
 
-This demo is not presented as Sparkles' real internal system. It is a candidate-built hypothesis showing how I would think about ICP scoring, founder-led outbound, automation and measurable activation.
+This is not presented as Sparkles' internal GTM system. It is a candidate-built hypothesis showing how I would approach research, segmentation, outbound, automation, instrumentation and iteration.
+
+The repository itself uses a branch → pull request → validation → merge workflow to mirror the GitHub-native operating style behind the product.

@@ -1,0 +1,78 @@
+{
+  "company": "Ghost Foundation",
+  "website": "https://ghost.org",
+  "target_persona": "Brand, Product, Docs, Growth or Operations",
+  "research_date": "2026-09-24",
+  "motion": "delegation_and_workflow_acceleration",
+  "qualification": {
+    "existing_codebase": {
+      "value": true,
+      "evidence_ids": [
+        "g1",
+        "g2",
+        "g3"
+      ]
+    },
+    "uses_ai_coding_tools": {
+      "value": null,
+      "evidence_ids": []
+    },
+    "non_engineering_change_volume": {
+      "value": "unknown",
+      "evidence_ids": []
+    },
+    "employee_count": {
+      "value": null,
+      "evidence_ids": []
+    },
+    "engineering_team_size": {
+      "value": null,
+      "evidence_ids": []
+    }
+  },
+  "evidence": [
+    {
+      "id": "g1",
+      "source": "https://ghost.org/about/",
+      "fact": "Ghost describes itself as a non-profit organisation building open-source technology for modern publishing and publicly lists a cross-functional team including engineering/development, product, design, brand, support and infrastructure roles."
+    },
+    {
+      "id": "g2",
+      "source": "https://github.com/TryGhost/Docs",
+      "fact": "Ghost's official docs repository uses a GitHub pull-request workflow; the Mintlify GitHub App creates PR previews and merging to main triggers deployment to docs.ghost.org."
+    },
+    {
+      "id": "g3",
+      "source": "https://github.com/TryGhost/Ghost/blob/main/docs/contributing/testing.md",
+      "fact": "Ghost documents a monorepo testing workflow where contributors run pnpm check and relevant test suites before opening a pull request."
+    },
+    {
+      "id": "g4",
+      "source": "https://ghost.org/",
+      "fact": "Ghost markets the product to businesses as a measurable content-marketing platform and supports custom website design and themes."
+    },
+    {
+      "id": "g5",
+      "source": "https://ghost.org/about/",
+      "fact": "Ghost publicly reports a sustainable paid hosted business around its open-source core and publishes operating metrics on its About page."
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "gh1",
+      "statement": "A plausible Sparkles wedge is helping brand, product, docs or operations teammates make bounded website, documentation or product-surface changes while retaining Ghost's existing PR preview, testing and merge controls.",
+      "status": "hypothesis"
+    },
+    {
+      "id": "gh2",
+      "statement": "The strongest proof is likely reduced engineering interruption and faster cross-functional iteration, not novelty around AI itself.",
+      "status": "hypothesis"
+    }
+  ],
+  "unknowns": [
+    "Whether Ghost has a meaningful queue of non-engineering requests waiting on engineering.",
+    "Whether non-engineering teammates already use coding agents directly against production repositories.",
+    "Who would own the workflow and budget.",
+    "Current employee count and engineering-team size were intentionally left unset rather than inferred from public team listings."
+  ]
+}
