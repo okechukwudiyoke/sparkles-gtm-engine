@@ -1,0 +1,39 @@
+{
+  "company": "Acme Analytics",
+  "website": "https://acme.example",
+  "employee_count": 85,
+  "engineering_team_size": 14,
+  "role": "Head of Growth",
+  "email": "maya@acme.example",
+  "existing_codebase": true,
+  "uses_ai_coding_tools": true,
+  "non_engineering_change_volume": "high",
+  "pain_point": "Marketing waits several days for engineering to make pricing and landing-page changes.",
+  "icp_score": 100,
+  "segment": "A",
+  "score_reasons": [
+    "existing production codebase",
+    "engineering team >= 5",
+    "high non-engineering change volume",
+    "already uses AI coding tools",
+    "relevant champion/validator role",
+    "20-500 employee test segment"
+  ],
+  "route": "founder_outreach",
+  "subject": "Acme Analytics: ship one backlog item without joining the engineering queue",
+  "message": "Hi there,\n\nThe use case that stood out for Acme Analytics is: Marketing waits several days for engineering to make pricing and landing-page changes.\n\nSparkles lets non-engineering teammates request changes against an existing GitHub codebase while the work still comes back as a reviewable PR, so engineering keeps its normal controls.\n\nWould it be useful to test one real backlog item and see the PR Sparkles produces?\n\n- Okechukwu",
+  "funnel_event": {
+    "event_name": "gtm_lead_qualified",
+    "distinct_id": "maya@acme.example",
+    "properties": {
+      "company": "Acme Analytics",
+      "role": "Head of Growth",
+      "icp_score": 100,
+      "segment": "A",
+      "route": "founder_outreach",
+      "existing_codebase": true,
+      "uses_ai_coding_tools": true,
+      "non_engineering_change_volume": "high"
+    }
+  }
+}
