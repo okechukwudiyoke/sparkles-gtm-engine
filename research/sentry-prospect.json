@@ -1,0 +1,79 @@
+{
+  "company": "Sentry",
+  "website": "https://sentry.io",
+  "target_persona": "VP Marketing / Growth, Docs leader, or Product Operations",
+  "research_date": "2026-09-24",
+  "qualification": {
+    "existing_codebase": {
+      "value": true,
+      "evidence_ids": [
+        "e1",
+        "e4"
+      ]
+    },
+    "uses_ai_coding_tools": {
+      "value": true,
+      "evidence_ids": [
+        "e2",
+        "e3"
+      ]
+    },
+    "non_engineering_change_volume": {
+      "value": "unknown",
+      "evidence_ids": []
+    },
+    "employee_count": {
+      "value": null,
+      "evidence_ids": []
+    },
+    "engineering_team_size": {
+      "value": null,
+      "evidence_ids": []
+    }
+  },
+  "evidence": [
+    {
+      "id": "e1",
+      "source": "https://github.com/getsentry/sentry-docs",
+      "fact": "Sentry maintains a substantial public documentation codebase using Next.js, React, TypeScript, Tailwind and MDX; the repository showed more than 18,000 commits when researched."
+    },
+    {
+      "id": "e2",
+      "source": "https://github.com/getsentry/sentry-docs",
+      "fact": "The docs repository visibly contains AGENTS.md, CLAUDE.md, a .claude directory and Cursor rules, providing public evidence of agent-oriented development workflows."
+    },
+    {
+      "id": "e3",
+      "source": "https://github.com/getsentry/sentry-docs/blob/master/AGENTS.md",
+      "fact": "Sentry's agent instructions define AI-oriented contribution workflows, including brand-guideline, docs-review and technical-docs skills."
+    },
+    {
+      "id": "e4",
+      "source": "https://github.com/getsentry/sentry/blob/master/AGENTS.md",
+      "fact": "Sentry's main repository documents pull-request and CI guardrails, including sequencing requirements when changes span frontend and backend."
+    },
+    {
+      "id": "e5",
+      "source": "https://github.com/getsentry/sentry-docs/pulls",
+      "fact": "The public docs repository has a high-volume pull-request history, supporting the view that reviewable GitHub changes are a normal operating mechanism."
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "h1",
+      "statement": "A plausible Sparkles wedge is enabling marketing, docs or operations teammates to request bounded code/content changes while preserving Sentry's existing PR, CI and review controls.",
+      "status": "hypothesis"
+    },
+    {
+      "id": "h2",
+      "statement": "The likely objection is not 'AI is too new' but 'we already have strong AI coding workflows'; Sparkles would need to prove differentiated value for non-engineering teammates and governance.",
+      "status": "hypothesis"
+    }
+  ],
+  "unknowns": [
+    "Whether Sentry currently has a material backlog of non-engineering requests waiting on engineers.",
+    "Whether non-engineering teammates already use an internal agent workflow directly against production repositories.",
+    "Who owns the relevant cross-functional workflow and budget.",
+    "Current employee count and engineering-team size were intentionally left unset rather than inferred."
+  ]
+}
