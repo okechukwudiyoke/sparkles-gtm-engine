@@ -1,0 +1,12 @@
+{
+  "company": "Acme Analytics",
+  "website": "https://acme.example",
+  "employee_count": 85,
+  "engineering_team_size": 14,
+  "role": "Head of Growth",
+  "email": "maya@acme.example",
+  "existing_codebase": true,
+  "uses_ai_coding_tools": true,
+  "non_engineering_change_volume": "high",
+  "pain_point": "Marketing waits several days for engineering to make pricing and landing-page changes."
+}
