@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const researchPath = process.argv[2] || path.join(__dirname, '..', 'research', 'sentry-prospect.json');
 const research = JSON.parse(fs.readFileSync(researchPath, 'utf8'));
 
-const model = process.env.OPENAI_MODEL || 'gpt-5.6-luna';
+const model = process.env.OPENAI_MODEL;
 const apiKey = process.env.OPENAI_API_KEY;
 
 const prompt = `You are a B2B devtool GTM researcher helping qualify and personalize outreach for Sparkles.
