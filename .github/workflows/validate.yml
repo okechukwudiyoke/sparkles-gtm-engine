@@ -1,0 +1,33 @@
+name: Validate GTM demo
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate deterministic demo and research packets
+        run: npm run validate
+
+      - name: Run reviewer demo
+        run: npm run demo > /tmp/demo-output.json
+
+      - name: Build grounded prompts
+        run: |
+          npm run prompt > /tmp/sentry-prompt.txt
+          node scripts/build-personalization-prompt.js research/ghost-prospect.json > /tmp/ghost-prompt.txt
